@@ -12,16 +12,20 @@ export default function CheckoutPage() {
   const { state } = useLocation() as any;
   const { booking, experience } = state || {};
   const schema = z.object({
-    firstName: z.string().min(2),
-    lastName: z.string().min(2),
-    email: z.string().email(),
-    phone: z.string().regex(/^\d{10}$/),
+    firstName: z.string().min(2, 'First name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+    email: z.string().email('Please enter a valid email address'),
+    phone: z.string().regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
   });
   type FormData = z.infer<typeof schema>;
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ 
+    resolver: zodResolver(schema),
+    mode: 'onSubmit'
+  });
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   if (!booking || !experience) {
     return <div className="max-w-4xl mx-auto p-4">Missing booking data</div>;
@@ -42,18 +46,35 @@ export default function CheckoutPage() {
   };
 
   const submit = async (values: FormData) => {
+    console.log('✅ Form validation passed!');
+    console.log('Form submitted with values:', values);
+    console.log('Booking data:', { booking, experience });
+    
     setLoading(true);
+    setSubmitError('');
+    
     try {
-      const res = await api.post('/bookings', {
+      const payload = {
         experienceId: booking.experienceId,
         slotId: booking.slotId,
         participants: booking.participants,
         ...values,
         promoCode: promoCode || undefined,
-      });
+      };
+      
+      console.log('📤 Sending payload to backend:', payload);
+      
+      const res = await api.post('/bookings', payload);
+      
+      console.log('✅ Booking response:', res.data);
+      
       navigate('/result', { state: { success: true, booking: res.data.booking } });
     } catch (e: any) {
-      navigate('/result', { state: { success: false, error: e?.response?.data?.error || 'Failed' } });
+      console.error('❌ Booking error:', e);
+      console.error('Error response:', e?.response?.data);
+      const errorMessage = e?.response?.data?.error || e?.message || 'Failed to process booking';
+      setSubmitError(errorMessage);
+      navigate('/result', { state: { success: false, error: errorMessage } });
     } finally {
       setLoading(false);
     }
@@ -79,7 +100,11 @@ export default function CheckoutPage() {
       </header>
 
       <div className="max-w-6xl mx-auto p-4 md:p-8">
-        <form onSubmit={handleSubmit(submit)}>
+        <form onSubmit={(e) => {
+          console.log('Form onSubmit triggered');
+          e.preventDefault();
+          handleSubmit(submit)(e);
+        }}>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Left Column - Form */}
             <div className="space-y-6">
@@ -216,6 +241,24 @@ export default function CheckoutPage() {
                       </span>
                     </div>
                   </div>
+
+                  {submitError && (
+                    <div className="bg-red-50 border-2 border-red-200 rounded-xl p-3 text-red-700 text-sm mt-4">
+                      <strong>Error:</strong> {submitError}
+                    </div>
+                  )}
+
+                  {Object.keys(errors).length > 0 && (
+                    <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-yellow-700 text-sm mt-4">
+                      <strong>Please fix the following errors:</strong>
+                      <ul className="list-disc list-inside mt-2">
+                        {errors.firstName && <li>{errors.firstName.message}</li>}
+                        {errors.lastName && <li>{errors.lastName.message}</li>}
+                        {errors.email && <li>{errors.email.message}</li>}
+                        {errors.phone && <li>{errors.phone.message}</li>}
+                      </ul>
+                    </div>
+                  )}
 
                   <button 
                     type="submit"
