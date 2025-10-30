@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Experience {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  location    String
+  category    String
+  price       Float
+  duration    String
+  imageUrl    String
+  rating      Float      @default(0)
+  reviewCount Int        @default(0)
+  highlights  String[]
+  included    String[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  slots       Slot[]
+  bookings    Booking[]
+}
+
+model Slot {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  experienceId String     @db.ObjectId
+  date         DateTime
+  startTime    String
+  endTime      String
+  capacity     Int
+  booked       Int        @default(0)
+  price        Float
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  bookings     Booking[]
+
+  @@index([experienceId, date])
+}
+
+model Booking {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  experienceId String     @db.ObjectId
+  slotId       String     @db.ObjectId
+  firstName    String
+  lastName     String
+  email        String
+  phone        String
+  participants Int
+  totalPrice   Float
+  promoCode    String?
+  discount     Float      @default(0)
+  status       String     @default("confirmed")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  slot         Slot       @relation(fields: [slotId], references: [id])
+
+  @@index([email])
+  @@index([slotId])
+}
+
+model PromoCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique
+  type        String
+  value       Float
+  minAmount   Float?
+  maxDiscount Float?
+  validFrom   DateTime
+  validUntil  DateTime
+  usageLimit  Int?
+  usageCount  Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
