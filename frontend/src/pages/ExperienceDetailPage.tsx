@@ -51,11 +51,15 @@ export default function ExperienceDetailPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <span className="text-2xl">←</span>
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xl font-bold">📍</span>
+            <div className="flex items-center gap-3">
+              <svg width="35" height="40" viewBox="0 0 45 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.5 0C13.94 0 7 6.94 7 15.5C7 26.875 22.5 50 22.5 50C22.5 50 38 26.875 38 15.5C38 6.94 31.06 0 22.5 0Z" fill="#4A5568"/>
+                <text x="22.5" y="20" fontSize="14" fontWeight="bold" fill="#ECC94B" textAnchor="middle">hd</text>
+              </svg>
+              <div>
+                <span className="block text-lg font-bold text-slate-800">highway</span>
+                <span className="block text-lg font-bold text-slate-600">delite</span>
               </div>
-              <span className="text-xl font-bold text-slate-800">BookIt</span>
             </div>
           </Link>
         </div>
@@ -64,7 +68,14 @@ export default function ExperienceDetailPage() {
       <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         {/* Hero Image */}
         <div className="rounded-2xl overflow-hidden shadow-2xl">
-          <img src={experience.imageUrl} alt={experience.title} className="w-full h-96 object-cover" />
+          <img 
+            src={experience.imageUrl} 
+            alt={experience.title} 
+            className="w-full h-96 object-cover" 
+            onError={(img) => {
+              (img.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop';
+            }}
+          />
         </div>
 
         {/* Title and Info */}

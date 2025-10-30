@@ -35,11 +35,15 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-xl font-bold">📍</span>
+          <div className="flex items-center gap-3">
+            <svg width="45" height="50" viewBox="0 0 45 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.5 0C13.94 0 7 6.94 7 15.5C7 26.875 22.5 50 22.5 50C22.5 50 38 26.875 38 15.5C38 6.94 31.06 0 22.5 0Z" fill="#4A5568"/>
+              <text x="22.5" y="20" fontSize="14" fontWeight="bold" fill="#ECC94B" textAnchor="middle">hd</text>
+            </svg>
+            <div>
+              <span className="block text-xl font-bold text-slate-800">highway</span>
+              <span className="block text-xl font-bold text-slate-600">delite</span>
             </div>
-            <span className="text-xl font-bold text-slate-800">BookIt</span>
           </div>
           <div className="flex items-center gap-4">
             <input
@@ -48,7 +52,7 @@ export default function HomePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-500 hover:to-orange-600 transition">
+            <button className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-800 px-6 py-2 rounded-lg font-medium hover:from-yellow-500 hover:to-yellow-600 transition">
               Search
             </button>
           </div>
@@ -73,6 +77,9 @@ export default function HomePage() {
                     src={e.imageUrl} 
                     alt={e.title} 
                     className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    onError={(img) => {
+                      (img.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop';
+                    }}
                   />
                   <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
                     <span className="text-yellow-500 text-sm">⭐</span>

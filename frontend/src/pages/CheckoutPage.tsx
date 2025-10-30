@@ -65,11 +65,15 @@ export default function CheckoutPage() {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-2">
           <Link to={`/experiences/${booking.experienceId}`} className="text-2xl hover:opacity-60">←</Link>
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-xl font-bold">📍</span>
+          <div className="flex items-center gap-3">
+            <svg width="35" height="40" viewBox="0 0 45 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.5 0C13.94 0 7 6.94 7 15.5C7 26.875 22.5 50 22.5 50C22.5 50 38 26.875 38 15.5C38 6.94 31.06 0 22.5 0Z" fill="#4A5568"/>
+              <text x="22.5" y="20" fontSize="14" fontWeight="bold" fill="#ECC94B" textAnchor="middle">hd</text>
+            </svg>
+            <div>
+              <span className="block text-lg font-bold text-slate-800">highway delite</span>
+              <span className="block text-xs text-slate-600">Checkout</span>
             </div>
-            <span className="text-xl font-bold text-slate-800">BookIt - Checkout</span>
           </div>
         </div>
       </header>
@@ -153,6 +157,20 @@ export default function CheckoutPage() {
               </h2>
               
               <div className="space-y-4">
+                {/* Experience Image */}
+                {experience.imageUrl && (
+                  <div className="rounded-xl overflow-hidden mb-4">
+                    <img 
+                      src={experience.imageUrl} 
+                      alt={experience.title} 
+                      className="w-full h-40 object-cover"
+                      onError={(img) => {
+                        (img.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 {/* Experience Info */}
                 <div className="pb-4 border-b-2 border-slate-100">
                   <h3 className="font-bold text-lg text-slate-800 mb-2">{experience.title}</h3>

@@ -6,6 +6,21 @@ export default function ResultPage() {
   const booking = state?.booking;
   const error = state?.error;
   
+  // Generate a readable reference ID
+  const generateRefId = (id: string) => {
+    if (!id) return 'N/A';
+    // Create a readable format like "HUF568SQ"
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    let refId = '';
+    for (let i = 0; i < 8; i++) {
+      refId += chars[(hash * (i + 1)) % chars.length];
+    }
+    return refId;
+  };
+
+  const refId = booking?.id ? generateRefId(booking.id) : 'HUF568SQ';
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
@@ -27,9 +42,9 @@ export default function ResultPage() {
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200">
               <div className="space-y-3 text-left">
                 <div className="flex items-center justify-between pb-3 border-b border-green-200">
-                  <span className="text-slate-600 font-medium">Confirmation ID</span>
-                  <span className="font-mono font-bold text-slate-800 bg-white px-3 py-1 rounded-lg">
-                    #{booking?.id?.slice(-8).toUpperCase()}
+                  <span className="text-slate-600 font-medium">Ref ID:</span>
+                  <span className="font-mono font-bold text-slate-800 bg-white px-4 py-2 rounded-lg text-xl">
+                    {refId}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
