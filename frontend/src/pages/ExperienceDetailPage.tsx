@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 
 type Slot = {
@@ -45,120 +45,199 @@ export default function ExperienceDetailPage() {
   const total = participants * experience.price;
 
   return (
-    <div className="max-w-5xl mx-auto p-4 space-y-6">
-      <div className="rounded-lg overflow-hidden">
-        <img src={experience.imageUrl} alt={experience.title} className="w-full h-80 object-cover" />
-      </div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{experience.title}</h1>
-          <div className="text-slate-500">{experience.location}</div>
-        </div>
-        <div className="text-right">
-          <div className="text-xl font-semibold text-sky-600">₹{experience.price}</div>
-          <div className="text-sm">⭐ {experience.rating} ({experience.reviewCount})</div>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <div>
-            <h2 className="font-semibold mb-2">Description</h2>
-            <p className="text-slate-700">{experience.description}</p>
-          </div>
-
-          <div>
-            <h2 className="font-semibold mb-2">Highlights</h2>
-            <ul className="list-disc ml-6 text-slate-700">
-              {experience.highlights?.map((h: string) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="font-semibold mb-2">What's Included</h2>
-            <ul className="list-disc ml-6 text-slate-700">
-              {experience.included?.map((i: string) => (
-                <li key={i}>{i}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Date</label>
-            <input
-              type="date"
-              className="w-full border rounded-md px-3 py-2"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">Available Slots</label>
-            <div className="space-y-2 max-h-64 overflow-auto">
-              {slots.map((s) => {
-                const available = s.capacity - s.booked;
-                const disabled = available <= 0;
-                return (
-                  <button
-                    key={s.id}
-                    disabled={disabled}
-                    onClick={() => setSelectedSlot(s.id)}
-                    className={`w-full text-left px-3 py-2 rounded border ${
-                      selectedSlot === s.id ? 'border-sky-500' : 'border-slate-200'
-                    } ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50'}`}
-                  >
-                    {s.startTime} - {s.endTime} • {available} left
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Participants</label>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+            <span className="text-2xl">←</span>
             <div className="flex items-center gap-2">
-              <button
-                className="px-2 py-1 border rounded"
-                onClick={() => setParticipants((p) => Math.max(1, p - 1))}
-              >
-                -
-              </button>
-              <span>{participants}</span>
-              <button className="px-2 py-1 border rounded" onClick={() => setParticipants((p) => p + 1)}>
-                +
-              </button>
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xl font-bold">📍</span>
+              </div>
+              <span className="text-xl font-bold text-slate-800">BookIt</span>
+            </div>
+          </Link>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+        {/* Hero Image */}
+        <div className="rounded-2xl overflow-hidden shadow-2xl">
+          <img src={experience.imageUrl} alt={experience.title} className="w-full h-96 object-cover" />
+        </div>
+
+        {/* Title and Info */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">
+                  {experience.category}
+                </span>
+                <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                  <span className="text-yellow-500">⭐</span>
+                  <span className="text-sm font-semibold">{experience.rating}</span>
+                  <span className="text-xs text-slate-500">({experience.reviewCount} reviews)</span>
+                </div>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">{experience.title}</h1>
+              <p className="text-slate-600 flex items-center gap-2 text-lg">
+                <span>📍</span>
+                <span>{experience.location}</span>
+              </p>
+            </div>
+            <div className="text-left md:text-right">
+              <div className="text-sm text-slate-500">From</div>
+              <div className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+                ₹{experience.price}
+              </div>
+              <div className="text-sm text-slate-500 mt-1">per person</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Left Column - Details */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>📖</span> Description
+              </h2>
+              <p className="text-slate-700 leading-relaxed">{experience.description}</p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>✨</span> Highlights
+              </h2>
+              <ul className="space-y-3">
+                {experience.highlights?.map((h: string) => (
+                  <li key={h} className="flex items-start gap-3 text-slate-700">
+                    <span className="text-orange-500 text-xl">✓</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>📦</span> What's Included
+              </h2>
+              <ul className="space-y-3">
+                {experience.included?.map((i: string) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-700">
+                    <span className="text-green-500 text-xl">✓</span>
+                    <span>{i}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-slate-600">Total</div>
-            <div className="text-lg font-semibold">₹{total}</div>
-          </div>
+          {/* Right Column - Booking */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-24 border-2 border-orange-100">
+              <h3 className="text-lg font-bold text-slate-800 mb-4">Book Your Experience</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Select Date</label>
+                  <input
+                    type="date"
+                    className="w-full border-2 border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
 
-          <button
-            disabled={!selectedSlot || !selectedDate}
-            onClick={() =>
-              navigate('/checkout', {
-                state: {
-                  booking: {
-                    experienceId: experience.id,
-                    slotId: selectedSlot,
-                    participants,
-                    date: selectedDate,
-                  },
-                  experience,
-                },
-              })
-            }
-            className="w-full bg-sky-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          >
-            Book Now
-          </button>
+                {selectedDate && (
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Available Time Slots</label>
+                    <div className="space-y-2 max-h-64 overflow-auto">
+                      {slots.length === 0 ? (
+                        <div className="text-center py-4 text-slate-500">No slots available for this date</div>
+                      ) : (
+                        slots.map((s) => {
+                          const available = s.capacity - s.booked;
+                          const disabled = available <= 0;
+                          return (
+                            <button
+                              key={s.id}
+                              disabled={disabled}
+                              onClick={() => setSelectedSlot(s.id)}
+                              className={`w-full text-left px-4 py-3 rounded-xl border-2 transition ${
+                                selectedSlot === s.id
+                                  ? 'border-orange-500 bg-orange-50'
+                                  : disabled
+                                  ? 'border-slate-200 bg-slate-50 cursor-not-allowed opacity-50'
+                                  : 'border-slate-200 hover:border-orange-300 hover:bg-orange-50'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <span className="font-semibold text-slate-800">{s.startTime} - {s.endTime}</span>
+                                <span className={`text-sm ${disabled ? 'text-red-500' : 'text-green-600'}`}>
+                                  {disabled ? 'Sold Out' : `${available} left`}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Participants</label>
+                  <div className="flex items-center justify-between bg-slate-50 rounded-xl p-2 border-2 border-slate-200">
+                    <button
+                      className="w-10 h-10 bg-white rounded-lg border-2 border-slate-300 hover:border-orange-400 hover:bg-orange-50 transition font-bold text-lg"
+                      onClick={() => setParticipants((p) => Math.max(1, p - 1))}
+                    >
+                      −
+                    </button>
+                    <span className="text-xl font-bold text-slate-800">{participants}</span>
+                    <button 
+                      className="w-10 h-10 bg-white rounded-lg border-2 border-slate-300 hover:border-orange-400 hover:bg-orange-50 transition font-bold text-lg"
+                      onClick={() => setParticipants((p) => p + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t-2 border-slate-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-slate-600">Total Amount</span>
+                    <span className="text-2xl font-bold text-slate-800">₹{total}</span>
+                  </div>
+
+                  <button
+                    disabled={!selectedSlot || !selectedDate}
+                    onClick={() =>
+                      navigate('/checkout', {
+                        state: {
+                          booking: {
+                            experienceId: experience.id,
+                            slotId: selectedSlot,
+                            participants,
+                            date: selectedDate,
+                          },
+                          experience,
+                        },
+                      })
+                    }
+                    className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white px-6 py-4 rounded-xl font-bold text-lg hover:from-orange-500 hover:to-orange-600 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {!selectedDate ? 'Select a Date' : !selectedSlot ? 'Select a Time Slot' : 'Book Now'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
