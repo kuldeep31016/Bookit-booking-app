@@ -17,18 +17,36 @@ export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       try {
         const res = await api.get('/experiences', { params: { search } });
         setExperiences(res.data);
+        
+        // Extract unique locations for suggestions
+        if (search.length > 0) {
+          const locations = res.data
+            .map((exp: Experience) => exp.location)
+            .filter((loc: string) => loc.toLowerCase().includes(search.toLowerCase())) as string[];
+          const uniqueLocations = [...new Set(locations)];
+          setSuggestions(uniqueLocations);
+        } else {
+          setSuggestions([]);
+        }
       } finally {
         setLoading(false);
       }
     };
     load();
   }, [search]);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearch(suggestion);
+    setShowSuggestions(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -45,13 +63,37 @@ export default function HomePage() {
               <span className="block text-xl font-bold text-slate-600">delite</span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <input
-              className="w-64 md:w-96 border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-              placeholder="Search experiences..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="flex items-center gap-4 relative">
+            <div className="relative">
+              <input
+                className="w-64 md:w-96 border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                placeholder="Search experiences or locations..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              />
+              
+              {/* Suggestions Dropdown */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+                  {suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="w-full text-left px-4 py-3 hover:bg-orange-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-center gap-2"
+                    >
+                      <span className="text-orange-500">📍</span>
+                      <span className="text-slate-700 font-medium">{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-800 px-6 py-2 rounded-lg font-medium hover:from-yellow-500 hover:to-yellow-600 transition">
               Search
             </button>
