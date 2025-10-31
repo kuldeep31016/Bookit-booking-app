@@ -8,6 +8,24 @@ A full-stack travel experience booking application built with React, TypeScript,
 - **Backend API:** https://bookit-booking-app.onrender.com/api
 - **Database:** MongoDB Atlas
 
+## 📸 Screenshots
+
+### Homepage
+![Homepage Screenshot](./screenshots/homepage.png)
+*Browse and search through curated travel experiences*
+
+### Experience Details
+![Experience Details Screenshot](./screenshots/experience-details.png)
+*View detailed information about each experience*
+
+### Checkout Page
+![Checkout Screenshot](./screenshots/checkout.png)
+*Complete booking with promo code support*
+
+### Confirmation Page
+![Confirmation Screenshot](./screenshots/confirmation.png)
+*Booking confirmation with reference number*
+
 ## ✨ Features
 
 - 🔍 **Browse & Search** - Explore curated travel experiences across India
