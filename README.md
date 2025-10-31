@@ -11,19 +11,19 @@ A full-stack travel experience booking application built with React, TypeScript,
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage Screenshot](./screenshots/homepage.png)
+![Homepage Screenshot](./screenshots/image1.png)
 *Browse and search through curated travel experiences*
 
 ### Experience Details
-![Experience Details Screenshot](./screenshots/experience-details.png)
+![Experience Details Screenshot](./screenshots/image2.png)
 *View detailed information about each experience*
 
 ### Checkout Page
-![Checkout Screenshot](./screenshots/checkout.png)
+![Checkout Screenshot](./screenshots/image3.png)
 *Complete booking with promo code support*
 
 ### Confirmation Page
-![Confirmation Screenshot](./screenshots/confirmation.png)
+![Confirmation Screenshot](./screenshots/image4.png)
 *Booking confirmation with reference number*
 
 ## ✨ Features
