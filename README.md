@@ -2,6 +2,12 @@
 
 A full-stack travel experience booking application built with React, TypeScript, Node.js, and MongoDB.
 
+## 🌐 Live Deployment
+
+- **Frontend:** https://bookit-booking-app-q2cn.vercel.app/
+- **Backend API:** https://bookit-booking-app.onrender.com/api
+- **Database:** MongoDB Atlas
+
 ## ✨ Features
 
 - 🔍 **Browse & Search** - Explore curated travel experiences across India
